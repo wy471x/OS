@@ -112,6 +112,7 @@ $ man make
 3. **从0x7c00开始跟踪代码运行,将单步跟踪反汇编得到的代码与bootasm.S和 bootblock.asm进行比较。** 
    在第二题的基础上，在GDB命令行下执行`si`或`ni`命令，经过观察发现每一步的执行命令与`bootasm.S`和`bootblock.asm`文件中的保持一致。
 4. **自己找一个bootloader或内核中的代码位置，设置断点并进行测试。**
+
    在`labcodes/lab1/tools/`下的`lab1init`文件修改断点位置为`0x7c0e`，执行`make lab1-mon`验证`0x7c0e`断点的位置设置正确并正常执行。
 
 > 提示：参考附录“启动后第一条执行的指令”，可了解更详细的解释，以及如何单步调试和 
