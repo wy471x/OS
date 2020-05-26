@@ -51,24 +51,24 @@
 
 在此练习中，大家需要通过静态分析代码来了解： 
 
-1. **操作系统镜像文件ucore.img是如何一步一步生成的？(需要比较详细地解释Makefile中每一条相关命令和命令参数的含义，以及说明命令导致的结果) **
+1. **操作系统镜像文件ucore.img是如何一步一步生成的？(需要比较详细地解释Makefile中每一条相关命令和命令参数的含义，以及说明命令导致的结果)**
 
-   ![1](C:\Users\wanyong\Desktop\others\tsinghuaOS\OSlab\lab1\1.png)
+   ![1](https://github.com/wy471x/OS/blob/master/lab1/1.png)
 
    上图，可以看出Makefile文件执行时利用`gcc`将一些C的源文件（即带有`.c`后缀的文件）编译成目标文件（即带有`.o`后缀的文件）。
 
-   ![2](C:\Users\wanyong\Desktop\others\tsinghuaOS\OSlab\lab1\2.png)
+   ![2](https://github.com/wy471x/OS/blob/master/lab1/2.png)
 
    上图，可以看出Makefile文件执行时利用`ld`将目标文件转换成执行程序（即带有`.out`后缀的文件）。
 
-   ![3](C:\Users\wanyong\Desktop\others\tsinghuaOS\OSlab\lab1\3.png)
+   ![3](https://github.com/wy471x/OS/blob/master/lab1/3.png)
 
    上图，可以看出Makefile文件执行时利用`dd	`将可执行程序（即`bootloader`）放入一个虚拟硬盘中（即`ucore.img`）。
 
 
 2. **一个被系统认为是符合规范的硬盘主引导扇区的特征是什么？**
 
-   ![4](C:\Users\wanyong\Desktop\others\tsinghuaOS\OSlab\lab1\4.png)
+   ![4](https://github.com/wy471x/OS/blob/master/lab1/4.png)
 
    由上图可知，在该C源文件（`sign.c`）中描述了符合规范的硬盘主引导扇区的大小是512字节，并且末尾是以`0x55`和`0xAA`结束的。
 
