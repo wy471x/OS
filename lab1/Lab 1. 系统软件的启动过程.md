@@ -96,13 +96,23 @@ $ man make
 
 1. **从CPU加电后执行的第一条指令开始，单步跟踪BIOS的执行。** 
 
-   
+   在`lab1_result`目录下执行`make lab1-mon`后，会执行进入GDB调试界面，使用`ni`或`si`指令来执行单步跟踪BIOS的执行。
 
 2. **在初始化位置0x7c00设置实地址断点,测试断点正常。 **
-
+   在`labcodes/lab1/tools/`下新建初始化文件`lab1init`，并在其中添加以下内容：
+   ```shell
+   file bin/kernel
+   target remote :1234
+   set architecture i8086
+   b *0x7c00
+   continue
+   x/2i $pc
+   ```
+   ，内容添加完成后，切换至`labcodes/lab1`执行`make lab1-mon`即可。
 3. **从0x7c00开始跟踪代码运行,将单步跟踪反汇编得到的代码与bootasm.S和 bootblock.asm进行比较。** 
-
+   在第二题的基础上，在GDB命令行下执行`si`或`ni`命令，经过观察发现每一步的执行命令与`bootasm.S`和`bootblock.asm`文件中的保持一致。
 4. **自己找一个bootloader或内核中的代码位置，设置断点并进行测试。**
+   在`labcodes/lab1/tools/`下的`lab1init`文件修改断点位置为`0x7c0e`，执行`make lab1-mon`验证`0x7c0e`断点的位置设置正确并正常执行。
 
 > 提示：参考附录“启动后第一条执行的指令”，可了解更详细的解释，以及如何单步调试和 
 >
