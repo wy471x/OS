@@ -98,7 +98,8 @@ $ man make
 
    在`lab1_result`目录下执行`make lab1-mon`后，会执行进入GDB调试界面，使用`ni`或`si`指令来执行单步跟踪BIOS的执行。
 
-2. **在初始化位置0x7c00设置实地址断点,测试断点正常。 **
+2. **在初始化位置0x7c00设置实地址断点,测试断点正常。**
+
    在`labcodes/lab1/tools/`下新建初始化文件`lab1init`，并在其中添加以下内容：
    ```shell
    file bin/kernel
