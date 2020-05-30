@@ -197,7 +197,7 @@ BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中�
 
 * **如何初始化GDT表**
 
-  参考`bootasm.S`源码
+  参考链接：https://www.cnblogs.com/maruixin/p/3175894.html
 
 * **如何使能和进入保护模式**
 
