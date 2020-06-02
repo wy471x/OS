@@ -111,6 +111,7 @@ $ man make
    ```
    ，内容添加完成后，切换至`labcodes/lab1`执行`make lab1-mon`即可。
 3. **从0x7c00开始跟踪代码运行,将单步跟踪反汇编得到的代码与bootasm.S和 bootblock.asm进行比较。** 
+
    在第二题的基础上，在GDB命令行下执行`si`或`ni`命令，经过观察发现每一步的执行命令与`bootasm.S`和`bootblock.asm`文件中的保持一致。
 4. **自己找一个bootloader或内核中的代码位置，设置断点并进行测试。**
 
@@ -197,8 +198,24 @@ BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中�
 
 * **如何初始化GDT表**
 
-  参考链接：https://www.cnblogs.com/maruixin/p/3175894.html
-
+  位于`lab1\bootasm.S`中，全局描述符表如下定义的：
+  ```assembly
+    SEG_NULLASM                                     # null seg
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
+    SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
+  ```
+  位于`lab1\kern\pmm.c`中，全局描述符表如下定义：
+  ```assembly
+    static struct segdesc gdt[] = {
+    SEG_NULL,
+    [SEG_KTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_KERNEL),
+    [SEG_KDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_KERNEL),
+    [SEG_UTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_USER),
+    [SEG_UDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_USER),
+    [SEG_TSS]    = SEG_NULL,
+    }; 
+  ```
+  
 * **如何使能和进入保护模式**
 
   参考`bootasm.S`源码
