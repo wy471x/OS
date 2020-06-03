@@ -219,6 +219,7 @@ BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中�
 * **如何使能和进入保护模式**
 
   参考`bootasm.S`源码
+  https://yuerer.com/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-uCore-Lab-1/
 
 #### 练习4：分析bootloader加载ELF格式的OS的过程。（要求在报告中写出分析）
 
