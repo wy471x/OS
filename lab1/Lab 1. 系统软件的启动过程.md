@@ -252,17 +252,17 @@ seta20.1:
     inb $0x64, %al                                  # Wait for not busy(8042 input buffer empty).
     testb $0x2, %al
     jnz seta20.1
-	#          -------  below made by dunk  ------
-	# inb $0x64, %al: 将端口0x64状态读入到寄存器al中
-	# testb $0x2, %al: 测试0x64端口的第二位是否为0
-	# jnz seta20.1: 如果不为0，则跳回至seta20.1标签处继续执行
-	# 三个操作的目的：测试8042的输入缓冲区是否为空
+    #          -------  below made by dunk  ------
+    # inb $0x64, %al: 将端口0x64状态读入到寄存器al中
+    # testb $0x2, %al: 测试0x64端口的第二位是否为0
+    # jnz seta20.1: 如果不为0，则跳回至seta20.1标签处继续执行
+    # 三个操作的目的：测试8042的输入缓冲区是否为空
     movb $0xd1, %al                                 # 0xd1 -> port 0x64
     outb %al, $0x64                                 # 0xd1 means: write data to 8042's P2 port
-	#           -------  below made by dunk  ------
-	# movb $0xd1, %al: 将0xd1写入寄存器al中
-	# outb %al, $0x64: 向0x64端口发送0xd1命令
-	# 两个操作的目的：发送写数据命令(即：0xd1)到输入缓冲中
+    #           -------  below made by dunk  ------
+    # movb $0xd1, %al: 将0xd1写入寄存器al中
+    # outb %al, $0x64: 向0x64端口发送0xd1命令
+    # 两个操作的目的：发送写数据命令(即：0xd1)到输入缓冲中
 
 seta20.2:
     inb $0x64, %al                                  # Wait for not busy(8042 input buffer empty).
@@ -271,10 +271,10 @@ seta20.2:
 
     movb $0xdf, %al                                 # 0xdf -> port 0x60
     outb %al, $0x60                                 # 0xdf = 11011111, means set P2's A20 bit(the 1 bit) to 1
-	#      ------ below made by dunk ------
-	# movb $0xdf, %al: 将0xdf命令写入寄存器al中
-	# outb %al, $0x60: 向0x60端口写入0xdf
-	# 两个操作的目的：将8042 Output Port(P2)得到的字节的第2位置1，然后写入8042 Input buffer
+    #      ------ below made by dunk ------
+    # movb $0xdf, %al: 将0xdf命令写入寄存器al中
+    # outb %al, $0x60: 向0x60端口写入0xdf
+    # 两个操作的目的：将8042 Output Port(P2)得到的字节的第2位置1，然后写入8042 Input buffer
 
     # Switch from real to protected mode, using a bootstrap GDT
     # and segment translation that makes virtual addresses
@@ -284,6 +284,13 @@ seta20.2:
     movl %cr0, %eax
     orl $CR0_PE_ON, %eax
     movl %eax, %cr0
+    #       ------ below made by dunk ------
+    # lgdt gdtdesc: 加载GDT全局描述符表
+    # movl %cr0, %eax: 将控制寄存器cr0中值写入通用寄存器eax中
+    # orl $CR0_PE_ON, %eax: 将CR0_PE_ON值与控制寄存器中的值进行或操作，从而将控制寄存器中
+    #                       控制保护模式开启的位置为1，即使能控制寄存器中保护模式位
+    # movl %eax, %cr0: 将通用寄存器中的值写回至控制寄存器cr0
+    # 上三步操作的目的：使能控制寄存器cr0中的保护模式位
 
     # Jump to next instruction, but in 32-bit code segment.
     # Switches processor into 32-bit mode.
