@@ -305,6 +305,9 @@ protcseg:
     movw %ax, %fs                                   # -> FS
     movw %ax, %gs                                   # -> GS
     movw %ax, %ss                                   # -> SS: Stack Segment
+    #     ------ below made by dunk ------
+   	# ljmp $PROT_MODE_CSEG, $protcseg: 跳转至下一条指令 解释详见：https://stackoverflow.com/questions/5211541/bootloader-   switching-processor-to-protected-mode
+	   #
 
     # Set up the stack pointer and call into C. The stack region is from 0--start(0x7c00)
     movl $0x0, %ebp
