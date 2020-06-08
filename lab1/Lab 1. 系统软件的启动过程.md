@@ -218,7 +218,6 @@ BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中�
   
 * **如何使能和进入保护模式**
 
-  https://yuerer.com/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-uCore-Lab-1/
 ```assembly
 #include <asm.h>
 
@@ -306,13 +305,17 @@ protcseg:
     movw %ax, %gs                                   # -> GS
     movw %ax, %ss                                   # -> SS: Stack Segment
     #     ------ below made by dunk ------
-   	# ljmp $PROT_MODE_CSEG, $protcseg: 跳转至下一条指令 解释详见：https://stackoverflow.com/questions/5211541/bootloader-   switching-processor-to-protected-mode
-	   #
+    # ljmp $PROT_MODE_CSEG, $protcseg: 跳转至下一条指令 解释详见：https://stackoverflow.com/questions/5211541/bootloader-switching-processor-to-protected-mode
 
     # Set up the stack pointer and call into C. The stack region is from 0--start(0x7c00)
     movl $0x0, %ebp
     movl $start, %esp
     call bootmain
+    #    ------ below made by dunk ------
+    # movl $0x0, %ebp: 将0x0写入寄存器ebp
+    # movl $start, %esp: 将start标签处地址值写入寄存器esp
+    # call bootmain: 调用bootmain函数
+    # esp 和 ebp的区别：esp是当前栈的指针，ebp则是当前栈帧的基指针，参考：https://stackoverflow.com/questions/15020621/what-is-between-esp-and-ebp
 
     # If bootmain returns (it shouldn't), loop.
 spin:
