@@ -341,6 +341,7 @@ gdtdesc:
 通过阅读bootmain.c，了解bootloader如何加载ELF文件。通过分析源代码和通过qemu来运 行并调试bootloader&OS，
 
 * bootloader如何读取硬盘扇区的？ 
+
   参考https://oscourse-tsinghua.gitbook.io/ucore-analysis/labs/lab1/practice4
 
 * bootloader是如何加载ELF格式的OS？
