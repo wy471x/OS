@@ -191,33 +191,6 @@ stepi 单步一条机器指令。
 
 BIOS将通过读取硬盘主引导扇区到内存，并转跳到对应内存中的位置执行bootloader。请分析bootloader是如何完成从实模式进入保护模式的。
 提示：需要阅读小节“保护模式和分段机制”和lab1/boot/bootasm.S源码，了解如何从实模式切换到保护模式，需要了解：
-
-* **为何开启A20，以及如何开启A20**
-
-  为了保持和8086的兼容，PC机在设计上在第21条地址线上做了一个开关，当这个开关打开时，这条地址线和其它地址线一样可以使用，当这个开关关闭时，第21条地址线恒为0，这个开关就叫做A20 Gate。在实模式下，若要访问高端内存区，此开关必须打开；同样在保护模式下。由于使用32位地址线，如果A20恒为0，那么系统只能访问奇数兆的内存，故在此模式下A20开关也必须开启。在保护模式下，为了使能所有地址位的寻址能力，通过向键盘控制器8042发送一个命令来完成对A20的开启操作。
-
-* **如何初始化GDT表**
-
-  位于`lab1\bootasm.S`中，全局描述符表如下定义的：
-  ```assembly
-    SEG_NULLASM                                     # null seg
-    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
-    SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
-  ```
-  位于`lab1\kern\pmm.c`中，全局描述符表如下定义：
-  ```assembly
-    static struct segdesc gdt[] = {
-    SEG_NULL,
-    [SEG_KTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_KERNEL),
-    [SEG_KDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_KERNEL),
-    [SEG_UTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_USER),
-    [SEG_UDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_USER),
-    [SEG_TSS]    = SEG_NULL,
-    }; 
-  ```
-  
-* **如何使能和进入保护模式**
-
 ```assembly
 #include <asm.h>
 
@@ -334,6 +307,31 @@ gdtdesc:
 
 ```
 
+* **为何开启A20，以及如何开启A20**
+
+  为了保持和8086的兼容，PC机在设计上在第21条地址线上做了一个开关，当这个开关打开时，这条地址线和其它地址线一样可以使用，当这个开关关闭时，第21条地址线恒为0，这个开关就叫做A20 Gate。在实模式下，若要访问高端内存区，此开关必须打开；同样在保护模式下。由于使用32位地址线，如果A20恒为0，那么系统只能访问奇数兆的内存，故在此模式下A20开关也必须开启。在保护模式下，为了使能所有地址位的寻址能力，通过向键盘控制器8042发送一个命令来完成对A20的开启操作。
+
+* **如何初始化GDT表**
+
+  位于`lab1\bootasm.S`中，全局描述符表如下定义的：
+  ```assembly
+    SEG_NULLASM                                     # null seg
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)           # code seg for bootloader and kernel
+    SEG_ASM(STA_W, 0x0, 0xffffffff)                 # data seg for bootloader and kernel
+  ```
+  位于`lab1\kern\pmm.c`中，全局描述符表如下定义：
+  ```assembly
+    static struct segdesc gdt[] = {
+    SEG_NULL,
+    [SEG_KTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_KERNEL),
+    [SEG_KDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_KERNEL),
+    [SEG_UTEXT] = SEG(STA_X | STA_R, 0x0, 0xFFFFFFFF, DPL_USER),
+    [SEG_UDATA] = SEG(STA_W, 0x0, 0xFFFFFFFF, DPL_USER),
+    [SEG_TSS]    = SEG_NULL,
+    }; 
+  ```
+  
+* **如何使能和进入保护模式**
 
 
 #### 练习4：分析bootloader加载ELF格式的OS的过程。（要求在报告中写出分析）
