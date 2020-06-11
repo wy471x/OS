@@ -436,6 +436,13 @@ readseg(uintptr_t va, uint32_t count, uint32_t offset) {
 }
 
 /* bootmain - the entry of bootloader */
+/*      ------ below made by dunk ------
+	bootloader 加载OS的流程为：
+	  1. 将硬盘第一个扇区的内容读入ELFHDR
+	  2. 验证ELFHADR是否为合格的ELF格式
+	  3. 加载ELF的每一个程序段
+	  4. 调用ELF头内的OS入口，加载OS成功
+*/
 void
 bootmain(void) {
     // read the 1st page off disk
