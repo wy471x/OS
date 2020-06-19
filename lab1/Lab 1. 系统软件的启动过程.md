@@ -830,6 +830,7 @@ print_stackframe(void) {
 1. 中断描述符表（也可简称为保护模式下的中断向量表）中一个表项占多少字节？其中哪 几位代表中断处理代码的入口？ 
 
 2. 请编程完善kern/trap/trap.c中对中断向量表进行初始化的函数idt_init。在idt_init函数中， 依次对所有中断入口进行初始化。使用mmu.h中的SETGATE宏，填充idt数组内容。每个 中断的入口由tools/vectors.c生成，使用trap.c中声明的vectors数组即可。
+> trap.c
 ```c
 /* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S */
 void
@@ -855,6 +856,51 @@ idt_init(void) {
 ```
 
 3. 请编程完善trap.c中的中断处理函数trap，在对时钟中断进行处理的部分填写trap函数中 处理时钟中断的部分，使操作系统每遇到100次时钟中断后，调用print_ticks子程序，向 屏幕上打印一行文字”100	ticks”。
+> trap.c
+```c
+/* trap_dispatch - dispatch based on what type of trap occurred */
+static void
+trap_dispatch(struct trapframe *tf) {
+    char c;
+
+    switch (tf->tf_trapno) {
+    case IRQ_OFFSET + IRQ_TIMER:
+        /* LAB1 YOUR CODE : STEP 3 */
+        /* handle the timer interrupt */
+        /* (1) After a timer interrupt, you should record this event using a global variable (increase it), such as ticks in kern/driver/clock.c
+         * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
+         * (3) Too Simple? Yes, I think so!
+         */
+		ticks++;
+		if (ticks % TICK_NUM == 0)
+			print_ticks();
+        break;
+    case IRQ_OFFSET + IRQ_COM1:
+        c = cons_getc();
+        cprintf("serial [%03d] %c\n", c, c);
+        break;
+    case IRQ_OFFSET + IRQ_KBD:
+        c = cons_getc();
+        cprintf("kbd [%03d] %c\n", c, c);
+        break;
+    //LAB1 CHALLENGE 1 : YOUR CODE you should modify below codes.
+    case T_SWITCH_TOU:
+    case T_SWITCH_TOK:
+        panic("T_SWITCH_** ??\n");
+        break;
+    case IRQ_OFFSET + IRQ_IDE1:
+    case IRQ_OFFSET + IRQ_IDE2:
+        /* do nothing */
+        break;
+    default:
+        // in kernel, it must be a mistake
+        if ((tf->tf_cs & 3) == 0) {
+            print_trapframe(tf);
+            panic("unexpected trap in kernel.\n");
+        }
+    }
+}
+```
 
 > 【注意】除了系统调用中断(T_SYSCALL)使用陷阱门描述符且权限为用户态权限以外， 其它中断均使用特权级(DPL)为０的中断门描述符，权限为内核态权限；而ucore的应用 程序处于特权级３，需要采用｀int	0x80`指令操作（这种方式称为软中断，软件中断， Tra中断，在lab5会碰到）来发出系统调用请求，并要能实现从特权级３到特权级０的转 换，所以系统调用中断(T_SYSCALL)所对应的中断门描述符中的特权级（DPL）需要设 置为３。
 
